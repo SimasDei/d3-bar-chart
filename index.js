@@ -2,12 +2,13 @@
 const svg = d3.select('svg');
 
 d3.json('menu.json').then(data => {
-
-  const y = d3.scaleLinear()
+  const y = d3
+    .scaleLinear()
     .domain([0, 1000])
     .range([0, 500]);
 
-  const x = d3.scaleBand()
+  const x = d3
+    .scaleBand()
     .domain(data.map(item => item.name))
     .range([0, 500])
     .paddingInner(0.2)
@@ -17,21 +18,21 @@ d3.json('menu.json').then(data => {
   console.log(x('veg curry'));
 
   // join the data to circs
-  const rects = svg.selectAll('rect')
-    .data(data);
+  const rects = svg.selectAll('rect').data(data);
 
   // add attrs to circs already in the DOM
-  rects.attr('width', x.bandwidth)
-    .attr("height", d => y(d.orders))
+  rects
+    .attr('width', x.bandwidth)
+    .attr('height', d => y(d.orders))
     .attr('fill', 'orange')
     .attr('x', d => x(d.name));
 
   // append the enter selection to the DOM
-  rects.enter()
+  rects
+    .enter()
     .append('rect')
-      .attr('width', x.bandwidth)
-      .attr("height", d => y(d.orders))
-      .attr('fill', 'orange')
-      .attr('x', (d) => x(d.name));
-
+    .attr('width', x.bandwidth)
+    .attr('height', d => y(d.orders))
+    .attr('fill', 'orange')
+    .attr('x', d => x(d.name));
 });
