@@ -1,42 +1,37 @@
-// const data = [
-//   { width: 200, height: 100, fill: 'pink' },
-//   { width: 100, height: 50, fill: 'salmon' },
-//   { width: 50, height: 25, fill: 'purple' },
-// ];
-
-// const svg = d3.select('svg');
-
-// const rects = svg
-//   .selectAll('rect')
-//   .data(data)
-//   .attr('width', d => d.width)
-//   .attr('height', d => d.height)
-//   .attr('fill', d => d.fill);
-
-// rects
-//   .enter()
-//   .append('rect')
-//   .attr('width', d => d.width)
-//   .attr('height', d => d.height)
-//   .attr('fill', d => d.fill);
-
-// console.log(rect);
-
+// select the svg conatiner first
 const svg = d3.select('svg');
 
-d3.json('./planets.json').then(data => {
-  const circs = svg.selectAll('circle').data(data);
-  circs
-    .attr('cy', 200)
-    .attr('cx', d => d.distance)
-    .attr('r', d => d.radius)
-    .attr('fill', d => d.fill);
+d3.json('menu.json').then(data => {
 
-  circs
-    .enter()
-    .append('circle')
-    .attr('cy', 200)
-    .attr('cx', d => d.distance)
-    .attr('r', d => d.radius)
-    .attr('fill', d => d.fill);
+  const y = d3.scaleLinear()
+    .domain([0, 1000])
+    .range([0, 500]);
+
+  const x = d3.scaleBand()
+    .domain(data.map(item => item.name))
+    .range([0, 500])
+    .paddingInner(0.2)
+    .paddingOuter(0.2);
+
+  console.log(x('veg burger'));
+  console.log(x('veg curry'));
+
+  // join the data to circs
+  const rects = svg.selectAll('rect')
+    .data(data);
+
+  // add attrs to circs already in the DOM
+  rects.attr('width', x.bandwidth)
+    .attr("height", d => y(d.orders))
+    .attr('fill', 'orange')
+    .attr('x', d => x(d.name));
+
+  // append the enter selection to the DOM
+  rects.enter()
+    .append('rect')
+      .attr('width', x.bandwidth)
+      .attr("height", d => y(d.orders))
+      .attr('fill', 'orange')
+      .attr('x', (d) => x(d.name));
+
 });
